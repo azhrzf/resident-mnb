@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('houses', function (Blueprint $table) {
+        Schema::create('house_residents', function (Blueprint $table) {
             $table->id();
-            $table->char('house_number', 20)->unique();
-            $table->enum('occupancy_status', ['occupied', 'unoccupied']);
+            $table->foreignId('house_id')->constrained();
+            $table->foreignId('resident_id')->constrained();
+            $table->date('date_of_entry');
+            $table->date('date_of_exit')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('houses');
+        Schema::dropIfExists('house_residents');
     }
 };

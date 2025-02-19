@@ -4,24 +4,24 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Resident;
+use App\Models\House;
 
-class ResidentSeeder extends Seeder
+class HouseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 15; $i++) {
-            Resident::factory()->create([
-                'resident_status' => 'permanent',
+        for ($i = 1; $i <= 20; $i++) {
+            House::factory()->create([
+                'occupancy_status' => 'occupied',
             ]);
         }
 
         for ($i = 1; $i <= 5; $i++) {
-            Resident::factory()->create([
-                'resident_status' => 'temporary',
+            House::factory()->create([
+                'occupancy_status' => 'unoccupied',
             ]);
         }
     }

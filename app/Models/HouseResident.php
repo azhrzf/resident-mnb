@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class House extends Model
+class HouseResident extends Model
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
@@ -16,7 +16,9 @@ class House extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'house_number',
-        'occupancy_status',
+        'house_id',
+        'resident_id',
+        'date_of_entry',
+        'date_of_exit',
     ];
 }

@@ -19,7 +19,6 @@ class ResidentFactory extends Factory
         return [
             'full_name' => fake()->name(),
             'id_card_photo' => 'example.png',
-            'resident_status' => fake()->randomElement(['permanent', 'temporary']),
             'phone_number' => fake()->phoneNumber(),
             'marital_status' => fake()->randomElement(['single', 'married']),
         ];
