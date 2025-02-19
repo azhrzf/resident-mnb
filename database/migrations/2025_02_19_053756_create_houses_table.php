@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('residents', function (Blueprint $table) {
+        Schema::create('houses', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
-            $table->string('id_card_photo');
-            $table->enum('resident_status', ['permanent', 'temporary']);
-            $table->char('phone_number', 20);
-            $table->enum('marital_status', ['single', 'married']);
+            $table->char('house_number', 20);
+            $table->enum('occupancy_status', ['occupied', 'unoccupied']);
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('residents');
+        Schema::dropIfExists('houses');
     }
 };
