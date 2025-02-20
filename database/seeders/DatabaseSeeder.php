@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ExpenseCategory;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,6 +25,11 @@ class DatabaseSeeder extends Seeder
             HouseSeeder::class,
             ResidentSeeder::class,
             HouseResidentSeeder::class,
+            FeeTypeSeeder::class,
+            PaymentSeeder::class,
+            ExpenseCategorySeeder::class,
+            ExpenseSeeder::class,
+            FinancialSummarySeeder::class,
         ]);
     }
 }
