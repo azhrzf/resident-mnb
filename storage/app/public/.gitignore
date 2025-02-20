@@ -1,2 +1,5 @@
 *
 !.gitignore
+!images/
+!images/id-card-photos/
+!images/id-card-photos/example.jpg

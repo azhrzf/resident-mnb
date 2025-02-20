@@ -16,4 +16,9 @@ class FeeType extends Model
         'description',
         'default_amount',
     ];
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'fee_type_id', 'id');
+    }
 }

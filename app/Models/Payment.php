@@ -16,12 +16,21 @@ class Payment extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'resident_id',
-        'house_id',
+        'house_resident_id',
         'fee_type_id',
         'amount',
         'payment_date',
         'payment_period',
         'payment_status',
     ];
+
+    public function houseResident()
+    {
+        return $this->belongsTo(HouseResident::class, 'house_resident_id', 'id');
+    }
+
+    public function feeType()
+    {
+        return $this->belongsTo(FeeType::class, 'fee_type_id', 'id');
+    }
 }

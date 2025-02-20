@@ -16,4 +16,9 @@ class ExpenseCategory extends Model
         'description',
         'default_amount',
     ];
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class, 'expense_category_id', 'id');
+    }
 }

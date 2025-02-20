@@ -3,8 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\House;
-use App\Models\Resident;
+use App\Models\HouseResident;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
@@ -19,8 +18,7 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            'resident_id' => Resident::factory(),
-            'house_id' => House::factory(),
+            'house_resident_id' => HouseResident::factory(),
         ];
     }
 }

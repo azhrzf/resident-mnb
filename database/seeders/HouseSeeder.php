@@ -21,7 +21,7 @@ class HouseSeeder extends Seeder
 
         for ($i = 1; $i <= 5; $i++) {
             House::factory()->create([
-                'occupancy_status' => 'unoccupied',
+                'occupancy_status' => 'vacant',
             ]);
         }
     }
