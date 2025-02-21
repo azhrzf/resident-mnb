@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Payment;
+use App\Http\Requests\StorePaymentRequest;
 
 class PaymentController extends Controller
 {
-    public function show()
+    public function index()
     {
         $payments = Payment::with([
             'feeType',
@@ -33,5 +34,31 @@ class PaymentController extends Controller
             'status' => 'success',
             'data' => $payment
         ]);
+    }
+
+    public function showByDate(Request $request)
+    {
+        $payment = new Payment();
+
+        $dates = $request->input('dates');
+        $type = $request->input('type');
+
+        $data = $payment->getPaymentsByDate($dates, $type);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
+    }
+
+    public function store(StorePaymentRequest $request)
+    {
+        $validatedData = $request->validated();
+        $payment = Payment::create($validatedData);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $payment
+        ], 201);
     }
 }

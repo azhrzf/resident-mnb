@@ -8,7 +8,7 @@ use App\Http\Requests\StoreHouseRequest;
 
 class HouseController extends Controller
 {
-    public function show()
+    public function index()
     {
         $houses = House::all();
 
@@ -20,7 +20,8 @@ class HouseController extends Controller
 
     public function showDetail($id)
     {
-        $houseResidentsData = House::getHouseDetail($id);
+        $house = new House();
+        $houseResidentsData = $house->getHouseDetail($id);
 
         return response()->json([
             'status' => 'success',

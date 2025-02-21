@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
             PaymentSeeder::class,
             ExpenseCategorySeeder::class,
             ExpenseSeeder::class,
-            FinancialSummarySeeder::class,
         ]);
     }
 }

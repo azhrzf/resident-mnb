@@ -9,7 +9,7 @@ use App\Http\Requests\StoreResidentRequest;
 
 class ResidentController extends Controller
 {
-    public function show()
+    public function index()
     {
         $residents = Resident::all();
 
@@ -21,7 +21,8 @@ class ResidentController extends Controller
 
     public function showDetail($id)
     {
-        $houseResidentsData = Resident::getResidentDetail($id);
+        $resident = new Resident();
+        $houseResidentsData = $resident->getResidentDetail($id);
 
         return response()->json([
             'status' => 'success',
@@ -31,26 +32,29 @@ class ResidentController extends Controller
 
     public function store(StoreResidentRequest $request)
     {
-        $resident = Resident::createWithHouseResident($request->validated());
+        $resident = new Resident();
+        $storeResident = $resident->createWithHouseResident($request->validated());
 
         return response()->json([
             'status' => 'success',
-            'data' => $resident->load('houseResidents')
+            'data' => $storeResident->load('houseResidents')
         ], 201);
     }
 
     public function update(StoreResidentRequest $request, $id)
     {
-        $resident = Resident::updateWithHouseResident($request->validated(), $id);
+        $resident = new Resident();
+        $updateResident = $resident->updateWithHouseResident($request->validated(), $id);
 
         return response()->json([
             'status' => 'success',
-            'data' => $resident->load('houseResidents')
+            'data' => $updateResident->load('houseResidents')
         ]);
     }
 
     public function showImage($filename)
     {
-        return ImageController::getImage($filename, 'id-card-photos');
+        $imageHelpher = new ImageController();
+        return $imageHelpher->getImage($filename, 'id-card-photos');
     }
 }

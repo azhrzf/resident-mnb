@@ -33,10 +33,13 @@ class Resident extends Model
         return $this->hasMany(HouseResident::class, 'resident_id', 'id');
     }
 
-    public static function createWithHouseResident(array $data)
+    public function createWithHouseResident(array $data)
     {
-        $data['id_card_photo'] = ImageController::storeImage($data['id_card_photo'], $data['full_name'], 'id-card-photos');
+        $imageHelper = new ImageController();
+        $data['id_card_photo'] = $imageHelper->storeImage($data['id_card_photo'], $data['full_name'], 'id-card-photos');
+
         $resident = self::create($data);
+        $houseResident = new HouseResident();
 
         $houseResidentData = [
             'resident_id' => $resident->id,
@@ -46,19 +49,22 @@ class Resident extends Model
         ];
 
         if (!empty($data['house_id'])) {
-            HouseResident::assignToHouse($houseResidentData);
+            $houseResident->assignToHouse($houseResidentData);
         }
 
         return $resident;
     }
 
-    public static function updateWithHouseResident(array $data, $id)
+    public function updateWithHouseResident(array $data, $id)
     {
         $resident = self::find($id);
-        HouseResident::updateHouseResident($data);
+        $imageHelper = new ImageController();
+
+        $houseResident = new HouseResident();
+        $houseResident->updateHouseResident($data);
 
         if (!empty($data['id_card_photo'])) {
-            $data['id_card_photo'] = ImageController::replaceImage(
+            $data['id_card_photo'] = $imageHelper->replaceImage(
                 $data['id_card_photo'],
                 $resident->id_card_photo,
                 $data['full_name'],
@@ -71,13 +77,13 @@ class Resident extends Model
         return $resident;
     }
 
-    public static function getResidentDetail($id)
+    public function getResidentDetail($id)
     {
         $resident = Resident::with([
-            'houseResidents.house', 
+            'houseResidents.house',
             'houseResidents.payments.feeType'
         ])->where('id', $id)->first();
-    
+
         return $resident;
     }
 }

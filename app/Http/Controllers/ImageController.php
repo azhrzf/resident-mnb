@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class ImageController extends Controller
 {
 
-    public static function storeImage($imageFile, $name, $folder)
+    public function storeImage($imageFile, $name, $folder)
     {
         $extension = $imageFile->getClientOriginalExtension();
         $newFilename = Str::slug(substr($name, 0, 100), '-') . '-' . Str::uuid() . ".$extension";
@@ -18,7 +18,7 @@ class ImageController extends Controller
         return $newFilename;
     }
 
-    public static function replaceImage($newImageFile, $oldImageFilename, $name, $folder)
+    public function replaceImage($newImageFile, $oldImageFilename, $name, $folder)
     {
         if ($oldImageFilename && Storage::disk('public')->exists("images/$folder/$oldImageFilename")) {
             Storage::disk('public')->delete("images/$folder/$oldImageFilename");
@@ -28,7 +28,7 @@ class ImageController extends Controller
         }
     }
 
-    public static function getImage($filename, $folder)
+    public function getImage($filename, $folder)
     {
         $path = "images/$folder/$filename";
 

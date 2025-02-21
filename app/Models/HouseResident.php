@@ -38,12 +38,12 @@ class HouseResident extends Model
         return $this->hasMany(Payment::class, 'house_resident_id', 'id');
     }
 
-    public static function assignToHouse($houseResidentData)
+    public function assignToHouse($houseResidentData)
     {
         return self::create($houseResidentData);
     }
 
-    public static function updateHouseResident($data)
+    public function updateHouseResident($data)
     {
         $residentId = $data['resident_id'];
         $newDateOfEntry = Carbon::parse($data['date_of_entry']);

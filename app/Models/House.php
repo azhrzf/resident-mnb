@@ -29,7 +29,7 @@ class House extends Model
         return $this->hasMany(HouseResident::class, 'house_id', 'id');
     }
 
-    public static function getHouseDetail($id)
+    public function getHouseDetail($id)
     {
         $house = House::with([
             'houseResidents.resident', 
