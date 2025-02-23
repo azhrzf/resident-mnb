@@ -8,15 +8,18 @@ use App\Http\Requests\StoreExpenseRequest;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $expenses = Expense::with([
-            'expenseCategory',
-        ])->get();
+        $payment = new Expense();
+
+        $dates = $request->query('dates', []);
+        $type = $request->query('type');
+
+        $data = $payment->getExpensesByDates($dates, $type);
 
         return response()->json([
             'status' => 'success',
-            'data' => $expenses
+            'data' => $data
         ]);
     }
 
@@ -24,26 +27,11 @@ class ExpenseController extends Controller
     {
         $expense = Expense::with([
             'expenseCategory',
-        ])->where('id', $id)->first();
+        ])->orderBy('expense_date', 'desc')->where('id', $id)->first();
 
         return response()->json([
             'status' => 'success',
             'data' => $expense
-        ]);
-    }
-
-    public function showByDate(Request $request)
-    {
-        $payment = new Expense();
-
-        $dates = $request->input('dates');
-        $type = $request->input('type');
-
-        $data = $payment->getExpensesByDate($dates, $type);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $data
         ]);
     }
 

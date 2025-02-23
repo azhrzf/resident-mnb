@@ -19,6 +19,7 @@ class PaymentFactory extends Factory
     {
         return [
             'house_resident_id' => HouseResident::factory(),
+            'payment_status' => fake()->randomElement(['paid', 'unpaid']),
         ];
     }
 }

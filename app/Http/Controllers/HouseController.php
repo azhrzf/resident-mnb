@@ -37,7 +37,8 @@ class HouseController extends Controller
         $house = House::create($validatedData);
 
         return response()->json([
-            'status' => 'success',  
+            'status' => 'success',
+            'message' => 'House created successfully',
             'data' => $house
         ], 201);
     }

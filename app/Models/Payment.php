@@ -37,34 +37,40 @@ class Payment extends Model
     public function getPaymentsByDates(array $dates, $type = "")
     {
         $results = [];
-    
+
+        if (count($dates) == 0) {
+            $dates = Payment::select('payment_date')->distinct()->get()->pluck('payment_date')->toArray();
+            $type = 'complete';
+        }
+
         foreach ($dates as $date) {
             $month = date('m', strtotime($date));
             $year = date('Y', strtotime($date));
-    
-            $paymentsQuery = self::with(['feeType'])->whereYear('payment_date', $year);
-    
-            if ($type === 'complete') {
+
+            $paymentsQuery = self::with(['feeType', 'houseResident.house', 'houseResident.resident'])->whereYear('payment_date', $year);
+
+            if ($type == 'complete') {
                 $paymentsQuery = $paymentsQuery->whereMonth('payment_date', $month);
             }
-    
+
             $totalUnpaid = (clone $paymentsQuery)->where('payment_status', 'unpaid')->sum('amount');
             $totalPaid = (clone $paymentsQuery)->where('payment_status', 'paid')->sum('amount');
-    
+
             $data = [
+                'date' => $type == 'complete' ? "$month/$year" : $year,
                 'year' => $year,
-                'total_unpaid' => $totalUnpaid,
-                'total_paid' => $totalPaid,
+                'payment_total_unpaid' => $totalUnpaid,
+                'payment_total_paid' => $totalPaid,
                 'payments' => $paymentsQuery->get(),
             ];
-    
+
             if ($type === 'complete') {
                 $data['month'] = $month;
             }
-    
+
             $results[] = $data;
         }
-    
+
         return $results;
-    }    
+    }
 }

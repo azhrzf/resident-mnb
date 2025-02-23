@@ -27,26 +27,32 @@ class Expense extends Model
         return $this->belongsTo(ExpenseCategory::class, 'expense_category_id', 'id');
     }
 
-    public function getPaymentsByDates(array $dates, $type = "")
+    public function getExpensesByDates(array $dates, $type = "")
     {
         $results = [];
+
+        if (count($dates) == 0) {
+            $dates = self::select('expense_date')->distinct()->get()->pluck('expense_date')->toArray();
+            $type = 'complete';
+        }
 
         foreach ($dates as $date) {
             $month = date('m', strtotime($date));
             $year = date('Y', strtotime($date));
 
-            $paymentsQuery = self::with(['expenseCategory'])->whereYear('payment_date', $year);
+            $expensesQuery = self::with(['expenseCategory'])->whereYear('expense_date', $year);
 
             if ($type === 'complete') {
-                $paymentsQuery = $paymentsQuery->whereMonth('payment_date', $month);
+                $expensesQuery = $expensesQuery->whereMonth('expense_date', $month);
             }
 
-            $total = (clone $paymentsQuery)->sum('amount');
+            $total = (clone $expensesQuery)->sum('amount');
 
             $data = [
+                'date' => $type == 'complete' ? "$month/$year" : $year,
                 'year' => $year,
-                'total' => $total,
-                'payments' => $paymentsQuery->get(),
+                'expense_total' => $total,
+                'expenses' => $expensesQuery->get(),
             ];
 
             if ($type === 'complete') {

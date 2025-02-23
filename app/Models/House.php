@@ -32,10 +32,10 @@ class House extends Model
     public function getHouseDetail($id)
     {
         $house = House::with([
-            'houseResidents.resident', 
+            'houseResidents.resident',
             'houseResidents.payments.feeType'
         ])->where('id', $id)->first();
-    
+
         return $house;
     }
 }

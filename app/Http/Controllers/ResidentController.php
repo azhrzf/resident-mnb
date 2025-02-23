@@ -11,11 +11,12 @@ class ResidentController extends Controller
 {
     public function index()
     {
-        $residents = Resident::all();
+        $resident = new Resident();
+        $residentsWithLatestHouse = $resident->getResidentWithLastestHouse();
 
         return response()->json([
             'status' => 'success',
-            'data' => $residents
+            'data' => $residentsWithLatestHouse
         ]);
     }
 

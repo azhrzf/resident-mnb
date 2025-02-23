@@ -8,6 +8,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\FeeTypeController;
 use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\FinancialSummaryController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -26,11 +27,15 @@ Route::put('/houses/{id}', [HouseController::class, 'update']);
 
 Route::get('/payments', [PaymentController::class, 'index']);
 Route::get('/payments/{id}', [PaymentController::class, 'showDetail']);
+Route::put('/payments/{id}', [PaymentController::class, 'update']);
 Route::post('/payments', [PaymentController::class, 'store']);
 
 Route::get('/expenses', [ExpenseController::class, 'index']);
 Route::get('/expenses/{id}', [ExpenseController::class, 'showDetail']);
+Route::put('/expenses/{id}', [ExpenseController::class, 'update']);
 Route::post('/expenses', [ExpenseController::class, 'store']);
 
 Route::get('/fee-types', [FeeTypeController::class, 'index']);
 Route::get('/expense-categories', [ExpenseCategoryController::class, 'index']);
+
+Route::get('/financial-summary', [FinancialSummaryController::class, 'index']);

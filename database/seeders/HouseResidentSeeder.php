@@ -23,7 +23,7 @@ class HouseResidentSeeder extends Seeder
                 HouseResident::create([
                     'house_id' => $house->id,
                     'resident_id' => $residents[$index]->id,
-                    'date_of_entry' => '2025-01-01',
+                    'date_of_entry' => '2024-10-01',
                     'date_of_exit' => null,
                 ]);
             }

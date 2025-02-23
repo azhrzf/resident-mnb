@@ -33,6 +33,13 @@ class Resident extends Model
         return $this->hasMany(HouseResident::class, 'resident_id', 'id');
     }
 
+    public function getResidentWithLastestHouse()
+    {
+        return $this->with(['houseResidents' => function ($query) {
+            $query->latest('date_of_exit')->limit(1);
+        }, 'houseResidents.house'])->get();
+    }
+
     public function createWithHouseResident(array $data)
     {
         $imageHelper = new ImageController();

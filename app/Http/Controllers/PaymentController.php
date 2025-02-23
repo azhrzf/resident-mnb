@@ -8,17 +8,18 @@ use App\Http\Requests\StorePaymentRequest;
 
 class PaymentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $payments = Payment::with([
-            'feeType',
-            'houseResident.resident',
-            'houseResident.house'
-        ])->get();
+        $payment = new Payment();
+
+        $dates = $request->query('dates', []);
+        $type = $request->query('type');
+
+        $data = $payment->getPaymentsByDates($dates, $type);
 
         return response()->json([
             'status' => 'success',
-            'data' => $payments
+            'data' => $data
         ]);
     }
 
@@ -36,21 +37,6 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function showByDate(Request $request)
-    {
-        $payment = new Payment();
-
-        $dates = $request->input('dates');
-        $type = $request->input('type');
-
-        $data = $payment->getPaymentsByDate($dates, $type);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $data
-        ]);
-    }
-
     public function store(StorePaymentRequest $request)
     {
         $validatedData = $request->validated();
@@ -58,6 +44,7 @@ class PaymentController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'message' => 'Payment created successfully',
             'data' => $payment
         ], 201);
     }

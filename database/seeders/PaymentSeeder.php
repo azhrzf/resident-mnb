@@ -22,41 +22,49 @@ class PaymentSeeder extends Seeder
         $cleaningFee = FeeType::where('name', 'Kebersihan')->first();
 
         foreach ($houseResidents as $houseResident) {
-            Payment::create([
-                'house_resident_id' => $houseResident->id,
-                'fee_type_id' => $securityFee->id,
-                'amount' => $securityFee->default_amount,
-                'payment_date' => '2025-01-01',
-                'payment_period' => 'monthly',
-                'payment_status' => 'paid',
-            ]);
+            for ($i = 10; $i <= 12; $i++) {
+                $currentMonth = $i < 10 ? "0$i" : $i;
 
-            Payment::create([
-                'house_resident_id' => $houseResident->id,
-                'fee_type_id' => $cleaningFee->id,
-                'amount' => $cleaningFee->default_amount,
-                'payment_date' => '2025-01-01',
-                'payment_period' => 'monthly',
-                'payment_status' => 'paid',
-            ]);
+                Payment::create([
+                    'house_resident_id' => $houseResident->id,
+                    'fee_type_id' => $securityFee->id,
+                    'amount' => $securityFee->default_amount,
+                    'payment_date' => "2024-$currentMonth-01",
+                    'payment_status' => fake()->randomElement(['paid', 'unpaid']),
+                    'payment_period' => 'monthly',
+                ]);
 
-            Payment::create([
-                'house_resident_id' => $houseResident->id,
-                'fee_type_id' => $securityFee->id,
-                'amount' => $securityFee->default_amount,
-                'payment_date' => '2025-02-01',
-                'payment_period' => 'monthly',
-                'payment_status' => 'unpaid',
-            ]);
+                Payment::create([
+                    'house_resident_id' => $houseResident->id,
+                    'fee_type_id' => $cleaningFee->id,
+                    'amount' => $cleaningFee->default_amount,
+                    'payment_date' => "2024-$currentMonth-01",
+                    'payment_status' => fake()->randomElement(['paid', 'unpaid']),
+                    'payment_period' => 'monthly',
+                ]);
+            }
 
-            Payment::create([
-                'house_resident_id' => $houseResident->id,
-                'fee_type_id' => $cleaningFee->id,
-                'amount' => $cleaningFee->default_amount,
-                'payment_date' => '2025-02-01',
-                'payment_period' => 'monthly',
-                'payment_status' => 'unpaid',
-            ]);
+            for ($i = 1; $i <= 2; $i++) {
+                $currentMonth = $i < 10 ? "0$i" : $i;
+
+                Payment::create([
+                    'house_resident_id' => $houseResident->id,
+                    'fee_type_id' => $securityFee->id,
+                    'amount' => $securityFee->default_amount,
+                    'payment_date' => "2025-$currentMonth-01",
+                    'payment_status' => fake()->randomElement(['paid', 'unpaid']),
+                    'payment_period' => 'monthly',
+                ]);
+
+                Payment::create([
+                    'house_resident_id' => $houseResident->id,
+                    'fee_type_id' => $cleaningFee->id,
+                    'amount' => $cleaningFee->default_amount,
+                    'payment_date' => "2025-$currentMonth-01",
+                    'payment_status' => fake()->randomElement(['paid', 'unpaid']),
+                    'payment_period' => 'monthly',
+                ]);
+            }
         }
     }
 }
