@@ -18,7 +18,7 @@ class FinancialSummaryController extends Controller
 
         if (count($dates) == 0) {
             $dates = Payment::select('payment_date')->distinct()->get()->pluck('payment_date')->toArray();
-            $type = 'complete';
+            $type = 'monthly';
         }
 
         foreach ($dates as $date) {
@@ -26,14 +26,16 @@ class FinancialSummaryController extends Controller
             $year = date('Y', strtotime($date));
             $monthYear = "$month/$year";
 
-            if (in_array($monthYear, $processedDates)) {
+            if ($type == 'monthly' && in_array($monthYear, $processedDates)) {
+                continue;
+            } elseif ($type == 'yearly' && in_array($year, $processedDates)) {
                 continue;
             }
 
             $paymentsQuery = Payment::with(['feeType', 'houseResident.house', 'houseResident.resident'])->whereYear('payment_date', $year);
             $expensesQuery = Expense::with(['expenseCategory'])->whereYear('expense_date', $year);
 
-            if ($type == 'complete') {
+            if ($type == 'monthly') {
                 $paymentsQuery = $paymentsQuery->whereMonth('payment_date', $month);
                 $expensesQuery = $expensesQuery->whereMonth('expense_date', $month);
             }
@@ -43,8 +45,7 @@ class FinancialSummaryController extends Controller
             $expenseTotal = (clone $expensesQuery)->sum('amount');
 
             $data = [
-                'date' => $type == 'complete' ? "$month/$year" : $year,
-                'year' => $year,
+                'date' => $type == 'monthly' ? $monthYear : $year,
                 'payment_total_unpaid' => $paymentTotalUnpaid,
                 'payment_total_paid' => $paymentTotalPaid,
                 'payments' => $paymentsQuery->get(),
@@ -52,12 +53,8 @@ class FinancialSummaryController extends Controller
                 'expenses' => $expensesQuery->get(),
             ];
 
-            if ($type == 'complete') {
-                $data['month'] = $month;
-            }
-
             $results[] = $data;
-            $processedDates[] = $monthYear; 
+            $processedDates[] = $type == 'monthly' ? $monthYear : $year;
         }
 
         return response()->json([

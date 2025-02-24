@@ -27,14 +27,14 @@ class Expense extends Model
         return $this->belongsTo(ExpenseCategory::class, 'expense_category_id', 'id');
     }
 
-    public function getExpensesByDates(array $dates, $type = "")
+    public function getExpensesByDates(array $dates, $type = "monthly")
     {
         $results = [];
         $processedDates = [];
 
         if (count($dates) == 0) {
             $dates = self::select('expense_date')->distinct()->get()->pluck('expense_date')->toArray();
-            $type = 'complete';
+            $type = 'monthly';
         }
 
         foreach ($dates as $date) {
@@ -42,31 +42,28 @@ class Expense extends Model
             $year = date('Y', strtotime($date));
             $monthYear = "$month/$year";
 
-            if (in_array($monthYear, $processedDates)) {
+            if ($type == 'monthly' && in_array($monthYear, $processedDates)) {
+                continue;
+            } elseif ($type == 'yearly' && in_array($year, $processedDates)) {
                 continue;
             }
 
             $expensesQuery = self::with(['expenseCategory'])->whereYear('expense_date', $year);
 
-            if ($type == 'complete') {
+            if ($type == 'monthly') {
                 $expensesQuery = $expensesQuery->whereMonth('expense_date', $month);
             }
 
             $total = (clone $expensesQuery)->sum('amount');
 
             $data = [
-                'date' => $type == 'complete' ? $monthYear : $year,
-                'year' => $year,
+                'date' => $type == 'monthly' ? $monthYear : $year,
                 'expense_total' => $total,
                 'expenses' => $expensesQuery->get(),
             ];
 
-            if ($type == 'complete') {
-                $data['month'] = $month;
-            }
-
             $results[] = $data;
-            $processedDates[] = $monthYear; 
+            $processedDates[] = $type == 'monthly' ? $monthYear : $year;
         }
 
         return $results;
