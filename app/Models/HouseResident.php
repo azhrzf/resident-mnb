@@ -46,6 +46,7 @@ class HouseResident extends Model
     public function updateHouseResident($data)
     {
         $residentId = $data['resident_id'];
+        $houseId = $data['house_id'];
         $newDateOfEntry = Carbon::parse($data['date_of_entry']);
         $newDateOfExit = isset($data['date_of_exit']) ? Carbon::parse($data['date_of_exit']) : null;
 
@@ -56,8 +57,11 @@ class HouseResident extends Model
             $existingDateOfExit = Carbon::parse($houseResident->date_of_exit);
 
             if (
-                $newDateOfEntry->between($existingDateOfEntry, $existingDateOfExit) ||
-                ($newDateOfExit && $newDateOfExit->between($existingDateOfEntry, $existingDateOfExit))
+                $houseResident->house_id != $houseId &&
+                (
+                    $newDateOfEntry->between($existingDateOfEntry, $existingDateOfExit) ||
+                    ($newDateOfExit && $newDateOfExit->between($existingDateOfEntry, $existingDateOfExit))
+                )
             ) {
                 throw new \Exception('Resident is already assigned to a house within the specified date range');
             }
@@ -69,6 +73,7 @@ class HouseResident extends Model
         if ($latestHouseId == $data['house_id']) {
             $latestHouseResident->update($data);
         } else {
+            $latestHouseResident->update(['date_of_exit' => $data['date_of_entry']]);
             self::create($data);
         }
     }

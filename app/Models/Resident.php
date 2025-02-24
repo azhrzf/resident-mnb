@@ -52,7 +52,7 @@ class Resident extends Model
             'resident_id' => $resident->id,
             'house_id' => $data['house_id'],
             'date_of_entry' => $data['date_of_entry'],
-            'date_of_exit' => $data['date_of_exit'],
+            'date_of_exit' => $data['date_of_exit'] ?? null,
         ];
 
         if (!empty($data['house_id'])) {
@@ -68,6 +68,7 @@ class Resident extends Model
         $imageHelper = new ImageController();
 
         $houseResident = new HouseResident();
+        $data['resident_id'] = $id;
         $houseResident->updateHouseResident($data);
 
         if (!empty($data['id_card_photo'])) {

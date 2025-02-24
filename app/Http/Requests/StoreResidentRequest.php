@@ -21,7 +21,7 @@ class StoreResidentRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
+        return [
             'full_name' => 'required|max:255',
             'resident_status' => 'required|in:permanent,temporary',
             'phone_number' => 'required|max:20',
@@ -29,14 +29,7 @@ class StoreResidentRequest extends FormRequest
             'house_id' => 'nullable|exists:houses,id',
             'date_of_entry' => 'nullable|date',
             'date_of_exit' => 'nullable|date|after_or_equal:date_of_entry',
+            'id_card_photo' => 'nullable|file|mimes:jpeg,png,jpg,webp|max:10048'
         ];
-
-        if ($this->isMethod('post')) {
-            $rules['id_card_photo'] = 'required|file|mimes:jpeg,png,jpg,webp|max:2048';
-        } else {
-            $rules['id_card_photo'] = 'file|mimes:jpeg,png,jpg,webp|max:2048';
-        }
-
-        return $rules;
     }
 }
