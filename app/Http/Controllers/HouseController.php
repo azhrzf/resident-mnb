@@ -39,7 +39,7 @@ class HouseController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'House created successfully',
+            'message' => 'Rumah berhasil dibuat',
             'data' => $house
         ], 201);
     }
@@ -58,7 +58,7 @@ class HouseController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'House updated successfully',
+            'message' => 'Rumah berhasil diupdate',
             'data' => $house
         ]);
     }

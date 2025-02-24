@@ -24,7 +24,7 @@ class ImageController extends Controller
             Storage::disk('public')->delete("images/$folder/$oldImageFilename");
             return self::storeImage($newImageFile, $name, $folder);
         } else {
-            throw new \Exception('Image not found');
+            throw new \Exception('Gambar tidak ditemukan');
         }
     }
 
@@ -36,6 +36,6 @@ class ImageController extends Controller
             return response()->file(storage_path('app/public/' . $path));
         }
 
-        return response()->json(['error' => 'Image not found'], 404);
+        return response()->json(['error' => 'Gambar tidak ditemukan'], 404);
     }
 }

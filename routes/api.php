@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HouseController;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\HouseResidentController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\FeeTypeController;
 use App\Http\Controllers\ExpenseCategoryController;
@@ -33,6 +34,8 @@ Route::post('/payments', [PaymentController::class, 'store']);
 Route::get('/expenses', [ExpenseController::class, 'index']);
 Route::get('/expenses/{id}', [ExpenseController::class, 'showDetail']);
 Route::post('/expenses', [ExpenseController::class, 'store']);
+
+Route::get('/house-residents', [HouseResidentController::class, 'index']);
 
 Route::get('/fee-types', [FeeTypeController::class, 'index']);
 Route::get('/expense-categories', [ExpenseCategoryController::class, 'index']);

@@ -40,12 +40,26 @@ class PaymentController extends Controller
     public function store(StorePaymentRequest $request)
     {
         $validatedData = $request->validated();
-        $payment = Payment::create($validatedData);
+        $houseResidentId = $validatedData['house_resident_id'];
+        $paymentDate = $validatedData['payment_date'];
+        $feeTypeId = $validatedData['fee_type_id'];
+
+        $payment = new Payment();
+        $existingPayment = $payment->checkPaymentExist($houseResidentId, $paymentDate, $feeTypeId);
+
+        if ($existingPayment) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Pembayaran sudah ada pada tanggal tersebut',
+            ], 400);
+        }
+
+        $createPayment = Payment::create($validatedData);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Payment created successfully',
-            'data' => $payment
+            'message' => 'Pembayaran berhasil dibuat',
+            'data' => $createPayment
         ], 201);
     }
 
@@ -57,7 +71,7 @@ class PaymentController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Payment status updated successfully',
+            'message' => 'Pembayaran berhasil diupdate',
             'data' => $payment
         ]);
     }

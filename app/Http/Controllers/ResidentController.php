@@ -38,7 +38,7 @@ class ResidentController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Resident created successfully',
+            'message' => 'Penghuni berhasil dibuat',
             'data' => $storeResident->load('houseResidents')
         ], 201);
     }
@@ -50,7 +50,7 @@ class ResidentController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Resident updated successfully',
+            'message' => 'Penghuni berhasil diperbarui',
             'data' => $updateResident->load('houseResidents')
         ]);
     }

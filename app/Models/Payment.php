@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 
 class Payment extends Model
 {
@@ -40,7 +41,7 @@ class Payment extends Model
         $processedDates = [];
 
         if (count($dates) == 0) {
-            $dates = Payment::select('payment_date')->distinct()->get()->pluck('payment_date')->toArray();
+            $dates = self::select('payment_date')->distinct()->get()->pluck('payment_date')->toArray();
             $type = 'complete';
         }
 
@@ -75,9 +76,44 @@ class Payment extends Model
             }
 
             $results[] = $data;
-            $processedDates[] = $monthYear; 
+            $processedDates[] = $monthYear;
         }
 
         return $results;
+    }
+
+    public function checkPaymentExist($houseResidentId, $date, $feeTypeId)
+    {
+        $date = Carbon::parse($date);
+        $month = $date->month;
+        $year = $date->year;
+
+        $monthlyPayment = self::where('house_resident_id', $houseResidentId)
+            ->where('fee_type_id', $feeTypeId)
+            ->whereYear('payment_date', $year)
+            ->whereMonth('payment_date', $month)
+            ->first();
+
+        if ($monthlyPayment) {
+            return true;
+        }
+
+        $yearlyPayment = self::where('house_resident_id', $houseResidentId)
+            ->where('fee_type_id', $feeTypeId)
+            ->where('payment_period', 'yearly')
+            ->where(function ($query) use ($year, $month) {
+                $query->whereYear('payment_date', $year)
+                    ->orWhere(function ($query) use ($year, $month) {
+                        $query->whereYear('payment_date', $year - 1)
+                            ->whereMonth('payment_date', '>=', $month);
+                    });
+            })
+            ->first();
+
+        if ($yearlyPayment) {
+            return true;
+        }
+
+        return false;
     }
 }
