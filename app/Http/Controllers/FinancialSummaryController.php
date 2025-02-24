@@ -11,6 +11,7 @@ class FinancialSummaryController extends Controller
     public function index(Request $request)
     {
         $results = [];
+        $processedDates = [];
 
         $dates = $request->query('dates', []);
         $type = $request->query('type');
@@ -23,6 +24,11 @@ class FinancialSummaryController extends Controller
         foreach ($dates as $date) {
             $month = date('m', strtotime($date));
             $year = date('Y', strtotime($date));
+            $monthYear = "$month/$year";
+
+            if (in_array($monthYear, $processedDates)) {
+                continue;
+            }
 
             $paymentsQuery = Payment::with(['feeType', 'houseResident.house', 'houseResident.resident'])->whereYear('payment_date', $year);
             $expensesQuery = Expense::with(['expenseCategory'])->whereYear('expense_date', $year);
@@ -51,6 +57,7 @@ class FinancialSummaryController extends Controller
             }
 
             $results[] = $data;
+            $processedDates[] = $monthYear; 
         }
 
         return response()->json([

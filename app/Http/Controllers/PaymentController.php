@@ -48,4 +48,17 @@ class PaymentController extends Controller
             'data' => $payment
         ], 201);
     }
+
+    public function updatePaidStatus($id)
+    {
+        $payment = Payment::find($id);
+        $payment->payment_status = 'paid';
+        $payment->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Payment status updated successfully',
+            'data' => $payment
+        ]);
+    }
 }

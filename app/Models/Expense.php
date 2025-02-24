@@ -30,6 +30,7 @@ class Expense extends Model
     public function getExpensesByDates(array $dates, $type = "")
     {
         $results = [];
+        $processedDates = [];
 
         if (count($dates) == 0) {
             $dates = self::select('expense_date')->distinct()->get()->pluck('expense_date')->toArray();
@@ -39,27 +40,33 @@ class Expense extends Model
         foreach ($dates as $date) {
             $month = date('m', strtotime($date));
             $year = date('Y', strtotime($date));
+            $monthYear = "$month/$year";
+
+            if (in_array($monthYear, $processedDates)) {
+                continue;
+            }
 
             $expensesQuery = self::with(['expenseCategory'])->whereYear('expense_date', $year);
 
-            if ($type === 'complete') {
+            if ($type == 'complete') {
                 $expensesQuery = $expensesQuery->whereMonth('expense_date', $month);
             }
 
             $total = (clone $expensesQuery)->sum('amount');
 
             $data = [
-                'date' => $type == 'complete' ? "$month/$year" : $year,
+                'date' => $type == 'complete' ? $monthYear : $year,
                 'year' => $year,
                 'expense_total' => $total,
                 'expenses' => $expensesQuery->get(),
             ];
 
-            if ($type === 'complete') {
+            if ($type == 'complete') {
                 $data['month'] = $month;
             }
 
             $results[] = $data;
+            $processedDates[] = $monthYear; 
         }
 
         return $results;

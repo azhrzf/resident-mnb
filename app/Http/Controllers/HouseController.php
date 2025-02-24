@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\House;
+use App\Models\HouseResident;
 use App\Http\Requests\StoreHouseRequest;
 
 class HouseController extends Controller
@@ -48,8 +49,16 @@ class HouseController extends Controller
         $house = House::findOrFail($id);
         $house->update($request->validated());
 
+        $houseResident = new HouseResident();
+        $occupancyStatus = $request->validated()['occupancy_status'];
+
+        if ($occupancyStatus == 'vacant') {
+            $houseResident->setVacantHouse($id);
+        }
+
         return response()->json([
             'status' => 'success',
+            'message' => 'House updated successfully',
             'data' => $house
         ]);
     }

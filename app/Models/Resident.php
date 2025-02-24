@@ -36,7 +36,7 @@ class Resident extends Model
     public function getResidentWithLastestHouse()
     {
         return $this->with(['houseResidents' => function ($query) {
-            $query->latest('date_of_exit')->limit(1);
+            $query->orderByRaw('date_of_exit IS NULL DESC, date_of_exit DESC')->limit(1);
         }, 'houseResidents.house'])->get();
     }
 
@@ -59,6 +59,16 @@ class Resident extends Model
             $houseResident->assignToHouse($houseResidentData);
         }
 
+        $houseId = $data['house_id'];
+
+        if (!empty($houseId)) {
+            $house = House::find($houseId);
+            if ($house) {
+                $house->occupancy_status = 'occupied';
+                $house->save();
+            }
+        }
+
         return $resident;
     }
 
@@ -78,6 +88,16 @@ class Resident extends Model
                 $data['full_name'],
                 'id-card-photos'
             );
+        }
+
+        $houseId = $data['house_id'];
+
+        if (!empty($houseId)) {
+            $house = House::find($houseId);
+            if ($house) {
+                $house->occupancy_status = 'occupied';
+                $house->save();
+            }
         }
 
         $resident->update($data);

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('houses', function (Blueprint $table) {
             $table->id();
-            $table->char('house_number', 20)->unique();
+            $table->char('house_number', 20);
             $table->enum('occupancy_status', ['occupied', 'vacant']);
             $table->timestamps();
         });

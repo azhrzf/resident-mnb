@@ -26,7 +26,6 @@ class StoreHouseRequest extends FormRequest
             'house_number' => [
                 'required',
                 'max:20',
-                Rule::unique('houses')->ignore($this->house),
             ],
             'occupancy_status' => 'required|in:occupied,vacant',
         ];

@@ -52,20 +52,26 @@ class HouseResident extends Model
 
         $existingHouseResidents = self::where('resident_id', $residentId)->get();
 
-        foreach ($existingHouseResidents as $houseResident) {
-            $existingDateOfEntry = Carbon::parse($houseResident->date_of_entry);
-            $existingDateOfExit = Carbon::parse($houseResident->date_of_exit);
-
-            if (
-                $houseResident->house_id != $houseId &&
-                (
-                    $newDateOfEntry->between($existingDateOfEntry, $existingDateOfExit) ||
-                    ($newDateOfExit && $newDateOfExit->between($existingDateOfEntry, $existingDateOfExit))
-                )
-            ) {
-                throw new \Exception('Resident is already assigned to a house within the specified date range');
-            }
+        if ($existingHouseResidents->isEmpty()) {
+            self::create($data);
+            self::updateHouseOccupancyStatus($houseId);
+            return;
         }
+
+        // foreach ($existingHouseResidents as $houseResident) {
+        //     $existingDateOfEntry = Carbon::parse($houseResident->date_of_entry);
+        //     $existingDateOfExit = Carbon::parse($houseResident->date_of_exit);
+
+        //     if (
+        //         $houseResident->house_id != $houseId &&
+        //         (
+        //             $newDateOfEntry->between($existingDateOfEntry, $existingDateOfExit) ||
+        //             ($newDateOfExit && $newDateOfExit->between($existingDateOfEntry, $existingDateOfExit))
+        //         )
+        //     ) {
+        //         throw new \Exception('Resident is already assigned to a house within the specified date range');
+        //     }
+        // }
 
         $latestHouseResident = $existingHouseResidents->last();
         $latestHouseId = $latestHouseResident->house_id;
@@ -76,5 +82,43 @@ class HouseResident extends Model
             $latestHouseResident->update(['date_of_exit' => $data['date_of_entry']]);
             self::create($data);
         }
+
+        self::updateHouseOccupancyStatus($latestHouseId);
+        self::updateHouseOccupancyStatus($houseId);
+    }
+
+    public function updateHouseOccupancyStatus($houseId)
+    {
+        $house = House::where('id', $houseId)->first();
+
+        $houseResidents = self::where('house_id', $houseId)->get();
+
+        $isVacant = true;
+        foreach ($houseResidents as $houseResident) {
+            if (is_null($houseResident->date_of_exit) || Carbon::parse($houseResident->date_of_exit)->isFuture()) {
+                $isVacant = false;
+                break;
+            }
+        }
+
+        if ($isVacant) {
+            $house->occupancy_status = 'vacant';
+            $house->save();
+        }
+    }
+
+    public function setVacantHouse($houseId)
+    {
+        $houseResidents = self::where('house_id', $houseId)->get();
+        $today = Carbon::today();
+
+        foreach ($houseResidents as $houseResident) {
+            $houseResident->date_of_exit = $today;
+            $houseResident->save();
+        }
+
+        $house = House::find($houseId);
+        $house->occupancy_status = 'vacant';
+        $house->save();
     }
 }

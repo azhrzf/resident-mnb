@@ -36,5 +36,11 @@ class ExpenseCategorySeeder extends Seeder
             'description' => 'Biaya Token Listrik Pos Satpam',
             'default_amount' => 100000,
         ]);
+
+        ExpenseCategory::create([
+            'name' => 'Lain-lain',
+            'description' => 'Lain-lain',
+            'default_amount' => 0,
+        ]);
     }
 }

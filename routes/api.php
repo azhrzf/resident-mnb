@@ -27,12 +27,11 @@ Route::put('/houses/{id}', [HouseController::class, 'update']);
 
 Route::get('/payments', [PaymentController::class, 'index']);
 Route::get('/payments/{id}', [PaymentController::class, 'showDetail']);
-Route::put('/payments/{id}', [PaymentController::class, 'update']);
+Route::patch('/payments/{id}/paid', [PaymentController::class, 'updatePaidStatus']);
 Route::post('/payments', [PaymentController::class, 'store']);
 
 Route::get('/expenses', [ExpenseController::class, 'index']);
 Route::get('/expenses/{id}', [ExpenseController::class, 'showDetail']);
-Route::put('/expenses/{id}', [ExpenseController::class, 'update']);
 Route::post('/expenses', [ExpenseController::class, 'store']);
 
 Route::get('/fee-types', [FeeTypeController::class, 'index']);

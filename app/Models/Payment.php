@@ -37,6 +37,7 @@ class Payment extends Model
     public function getPaymentsByDates(array $dates, $type = "")
     {
         $results = [];
+        $processedDates = [];
 
         if (count($dates) == 0) {
             $dates = Payment::select('payment_date')->distinct()->get()->pluck('payment_date')->toArray();
@@ -46,6 +47,11 @@ class Payment extends Model
         foreach ($dates as $date) {
             $month = date('m', strtotime($date));
             $year = date('Y', strtotime($date));
+            $monthYear = "$month/$year";
+
+            if (in_array($monthYear, $processedDates)) {
+                continue;
+            }
 
             $paymentsQuery = self::with(['feeType', 'houseResident.house', 'houseResident.resident'])->whereYear('payment_date', $year);
 
@@ -64,11 +70,12 @@ class Payment extends Model
                 'payments' => $paymentsQuery->get(),
             ];
 
-            if ($type === 'complete') {
+            if ($type == 'complete') {
                 $data['month'] = $month;
             }
 
             $results[] = $data;
+            $processedDates[] = $monthYear; 
         }
 
         return $results;
